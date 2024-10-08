@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Board.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">assessment-2024-starter-monopoly</a> &gt; <a href="index.source.html" class="el_package">com.cm6123.monopoly.game.board</a> &gt; <span class="el_source">Board.java</span></div><h1>Board.java</h1><pre class="source lang-java linenums">
+package com.cm6123.monopoly.game.board;
+
+import com.cm6123.monopoly.game.player.Player;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Collections;
+
+public class Board {
+    /** The list of spaces on the board. */
+    private List&lt;Space&gt; spaces;
+    /** The list of players on the board. */
+    private List&lt;Player&gt; players;
+
+    /**
+     * Constructs a Board object with a specified number of spaces and players.
+     *
+     * @param numSpaces The number of spaces on the board.
+     * @param playersList The list of players on the board.
+     */
+<span class="fc" id="L22">    public Board(final int numSpaces, final List&lt;Player&gt; playersList) {</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        if (numSpaces &lt;= 0) {</span>
+<span class="nc" id="L24">            throw new IllegalArgumentException(&quot;Number of spaces must be greater than zero&quot;);</span>
+        }
+<span class="fc" id="L26">        this.spaces = createSpaces(numSpaces);</span>
+<span class="fc" id="L27">        this.players = playersList;</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Displays the current state of the board.
+     *
+     * @return The current state of the board.
+     */
+    public String displayBoard() {
+<span class="fc" id="L36">        StringBuilder boardDisplay = new StringBuilder();</span>
+<span class="fc" id="L37">        List&lt;List&lt;String&gt;&gt; playerPositions = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i = 0; i &lt; spaces.size(); i++) {</span>
+<span class="fc" id="L39">            playerPositions.add(new ArrayList&lt;&gt;());</span>
+        }
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int i = 0; i &lt; players.size(); i++) {</span>
+<span class="fc" id="L42">            Player player = players.get(i);</span>
+<span class="fc" id="L43">            playerPositions.get(player.getPosition() - 1).add(&quot;U&quot; + (i + 1));</span>
+        }
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = 0; i &lt; spaces.size(); i++) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            if (playerPositions.get(i).isEmpty()) {</span>
+<span class="fc bfc" id="L47" title="All 4 branches covered.">                if (spaces.get(i) instanceof TrainStation &amp;&amp; ((TrainStation) spaces.get(i)).isOwned()) {</span>
+<span class="fc" id="L48">                    boardDisplay.append(String.format(&quot;%-3s&quot;, &quot;TS*&quot;));</span>
+<span class="pc bpc" id="L49" title="1 of 4 branches missed.">                } else if (spaces.get(i) instanceof Property &amp;&amp; ((Property) spaces.get(i)).isOwned()) {</span>
+<span class="nc" id="L50">                    boardDisplay.append(String.format(&quot;%-3s&quot;, &quot;PR*&quot;));</span>
+                } else {
+<span class="fc" id="L52">                    boardDisplay.append(String.format(&quot;%-3s&quot;, spaces.get(i).getName()));</span>
+                }
+            } else {
+<span class="fc" id="L55">                boardDisplay.append(String.format(&quot;%-3s&quot;, String.join(&quot;/&quot;, playerPositions.get(i))));</span>
+            }
+<span class="fc" id="L57">            boardDisplay.append(&quot; &quot;);</span>
+        }
+
+<span class="fc" id="L60">        return boardDisplay.toString();</span>
+    }
+
+    /**
+     * Creates a list of spaces for the board.
+     *
+     * @param numSpaces The number of spaces to create.
+     * @return The list of spaces.
+     */
+    private List&lt;Space&gt; createSpaces(final int numSpaces) {
+<span class="fc" id="L70">        List&lt;Space&gt; spaceList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L71">        Random random = new Random();</span>
+<span class="fc" id="L72">        int numProperties = (int) (numSpaces * (random.nextDouble() * 0.2 + 0.3));</span>
+<span class="fc" id="L73">        int numTrainStations = (int) (numSpaces * (random.nextDouble() * 0.1 + 0.1));</span>
+<span class="fc" id="L74">        int numTaxOffices = numSpaces / 10;</span>
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        for (int i = 0; i &lt; numSpaces; i++) {</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">            if (i == 0) {</span>
+<span class="fc" id="L78">                spaceList.add(new Space(&quot;H&quot;, i));</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">            } else if (i &lt; numProperties + 1) {</span>
+<span class="fc" id="L80">                spaceList.add(new Property(&quot;PR&quot;, i));</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            } else if (i &lt; numProperties + numTrainStations + 1) {</span>
+<span class="fc" id="L82">                spaceList.add(new TrainStation(&quot;TS&quot;, i));</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            } else if (i &lt; numProperties + numTrainStations + numTaxOffices + 1) {</span>
+<span class="fc" id="L84">                spaceList.add(new TaxOffice(&quot;TO&quot;, i));</span>
+            } else {
+<span class="fc" id="L86">                spaceList.add(new Space(&quot;R&quot;, i));</span>
+            }
+        }
+
+        // Shuffle the spaces to distribute the properties, train stations, and tax offices randomly, excluding the home square
+<span class="fc" id="L91">        List&lt;Space&gt; spacesToShuffle = spaceList.subList(1, spaceList.size());</span>
+<span class="fc" id="L92">        Collections.shuffle(spacesToShuffle);</span>
+<span class="fc" id="L93">        spaceList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L94">        spaceList.add(new Space(&quot;H&quot;, 0));</span>
+<span class="fc" id="L95">        spaceList.addAll(spacesToShuffle);</span>
+
+<span class="fc" id="L97">        return spaceList;</span>
+    }
+
+    /**
+     * Retrieves the list of spaces on the board.
+     *
+     * @return The list of spaces.
+     */
+    public List&lt;Space&gt; getSpaces() {
+<span class="fc" id="L106">        return spaces;</span>
+    }
+
+    /**
+     * Retrieves the position of the space at the specified index.
+     *
+     * @param index The index of the space.
+     * @return The position of the space.
+     */
+    public int getPosition(final int index) {
+<span class="nc" id="L116">        return spaces.get(index).getPosition();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

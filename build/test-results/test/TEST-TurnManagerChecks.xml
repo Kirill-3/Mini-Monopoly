@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TurnManagerChecks" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-05-08T19:18:57" hostname="DSA10F60A6CCB4A" time="84.383">
+  <properties/>
+  <testcase name="playSingleTurnHandlesTaxWhenPlayerLandsOnTaxOffice()" classname="TurnManagerChecks" time="84.383"/>
+  <system-out><![CDATA[Player 1's balance: Â£1000
+Player 1 rolled 1 and 1. Moved to position 4
+Player 1 landed on a tax office and paid Â£10 in tax to the banker.
+Player 1's balance: Â£990
+H   R   R   U1  R   PR  PR  TO  TS  PR  
+
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

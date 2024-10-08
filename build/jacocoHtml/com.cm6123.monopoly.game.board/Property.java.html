@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Property.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">assessment-2024-starter-monopoly</a> &gt; <a href="index.source.html" class="el_package">com.cm6123.monopoly.game.board</a> &gt; <span class="el_source">Property.java</span></div><h1>Property.java</h1><pre class="source lang-java linenums">package com.cm6123.monopoly.game.board;
+
+import com.cm6123.monopoly.game.player.Player;
+
+import java.util.Random;
+
+public class Property extends Space implements PurchasableInterface {
+    /** The price of the property. */
+    private int price;
+    /** The owner of the property. */
+    private Player owner;
+
+    /**
+     * Constructs a Property object with a specified name and position.
+     *
+     * @param name The name of the property.
+     * @param position The position of the property.
+     */
+    public Property(final String name, final int position) {
+<span class="fc" id="L20">        super(name, position);</span>
+<span class="fc" id="L21">        Random random = new Random();</span>
+<span class="fc" id="L22">        int randomPrice = 100 + random.nextInt(401);</span>
+<span class="fc" id="L23">        this.price = (int) (Math.floor(randomPrice / 10.0) * 10);</span>
+<span class="fc" id="L24">        this.owner = null;</span>
+<span class="fc" id="L25">    }</span>
+
+    /**
+     * Retrieves the price of the property.
+     *
+     * @return The price of the property.
+     */
+    public int getPrice() {
+<span class="fc" id="L33">        return price;</span>
+    }
+    /**
+     * Retrieves the rent cost of the property.
+     *
+     * @return The rent cost of the property.
+     */
+    public int getRentCost() {
+        // Assuming the rent cost is 10% of the purchase price
+<span class="nc" id="L42">        return (int) (price * 0.1);</span>
+    }
+
+    /**
+     * Retrieves the owner of the property.
+     *
+     * @return The owner of the property.
+     */
+    public Player getOwner() {
+<span class="fc" id="L51">        return owner;</span>
+    }
+
+    /**
+     * Sets the owner of the property.
+     *
+     * @param propertyOwner The owner of the property.
+     */
+    public void setOwner(final Player propertyOwner) {
+<span class="fc" id="L60">        this.owner = propertyOwner;</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Checks if the property is owned.
+     *
+     * @return True if the property is owned, false otherwise.
+     */
+    public boolean isOwned() {
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        return owner != null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

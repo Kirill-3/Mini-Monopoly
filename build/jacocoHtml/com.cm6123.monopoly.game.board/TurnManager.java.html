@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TurnManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">assessment-2024-starter-monopoly</a> &gt; <a href="index.source.html" class="el_package">com.cm6123.monopoly.game.board</a> &gt; <span class="el_source">TurnManager.java</span></div><h1>TurnManager.java</h1><pre class="source lang-java linenums">package com.cm6123.monopoly.game.board;
+
+import com.cm6123.monopoly.dice.Dice;
+import com.cm6123.monopoly.game.player.AddPlayer;
+import com.cm6123.monopoly.game.player.Player;
+import com.cm6123.monopoly.game.player.InsufficientBalanceException;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.Scanner;
+
+public class TurnManager {
+    /**
+     * The AddPlayer object to manage players in the game.
+     */
+    private AddPlayer addPlayer;
+    /**
+     * The Board object to manage the game board.
+     */
+    private Board board;
+    /**
+     * The Scanner object to read user input.
+     */
+    private Scanner scanner;
+    /**
+     * Constructs a TurnManager object with the specified AddPlayer and Board instances.
+     *
+     * @param addPlayerInstance The AddPlayer instance.
+     * @param boardInstance     The Board instance.
+     */
+<span class="fc" id="L33">    public TurnManager(final AddPlayer addPlayerInstance, final Board boardInstance) {</span>
+<span class="fc" id="L34">        this.addPlayer = addPlayerInstance;</span>
+<span class="fc" id="L35">        this.board = boardInstance;</span>
+<span class="fc" id="L36">        this.scanner = new Scanner(System.in);</span>
+<span class="fc" id="L37">    }</span>
+    /**
+     * Plays a specified number of turns in the game.
+     *
+     * @param numTurns  The number of turns to play.
+     * @param isTestRun A flag indicating whether the game is a test run.
+     */
+    public void playTurns(final int numTurns, final boolean isTestRun) {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (numTurns &lt;= 0) {</span>
+<span class="fc" id="L46">            throw new IllegalArgumentException(&quot;Number of turns must be greater than zero&quot;);</span>
+        }
+
+<span class="fc" id="L49">        Dice dice = new Dice(6);</span>
+<span class="fc" id="L50">        int numPlayers = addPlayer.getNumPlayers();</span>
+
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (!isTestRun) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            for (int turn = 1; turn &lt;= numTurns; turn++) {</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">                if (addPlayer.getNumPlayers() == 1) {</span>
+<span class="nc" id="L55">                    System.out.println(&quot;Game over. &quot; + addPlayer.getPlayers().get(0).getName() + &quot; is the winner.&quot;);</span>
+<span class="nc" id="L56">                    break;</span>
+                }
+<span class="nc" id="L58">                System.out.println(&quot;Turn &quot; + turn + &quot;:&quot;);</span>
+<span class="nc" id="L59">                playSingleTurn(dice, turn, false);</span>
+            }
+        } else {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            for (int turn = 1; turn &lt;= numTurns; turn++) {</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">                if (addPlayer.getNumPlayers() == 1) {</span>
+<span class="nc" id="L64">                    System.out.println(&quot;Game over. &quot; + addPlayer.getPlayers().get(0).getName() + &quot; is the winner.&quot;);</span>
+<span class="nc" id="L65">                    break;</span>
+                }
+<span class="fc" id="L67">                System.out.println(&quot;Turn &quot; + turn + &quot;:&quot;);</span>
+<span class="fc" id="L68">                playSingleTurn(dice, turn, true);</span>
+            }
+        }
+
+<span class="fc" id="L72">        List&lt;Player&gt; winners = determineWinners();</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        for (Player winner : winners) {</span>
+<span class="fc" id="L74">            System.out.println(winner.getName() + &quot; is a winner with a total asset value of Â£&quot; + winner.getTotalAssets() + &quot;.&quot;);</span>
+<span class="fc" id="L75">        }</span>
+<span class="fc" id="L76">        System.out.println(&quot;\n&quot; + board.displayBoard());</span>
+<span class="fc" id="L77">    }</span>
+    /**
+     * Plays a single turn in the game.
+     *
+     * @param dice      The Dice object to roll the dice.
+     * @param turn      The current turn number.
+     * @param isTestRun A flag indicating whether the game is a test run.
+     */
+    public void playSingleTurn(final Dice dice, final int turn, final boolean isTestRun) {
+<span class="fc" id="L86">        int numPlayers = addPlayer.getNumPlayers();</span>
+<span class="fc" id="L87">        int currentPlayerIndex = (turn - 1) % numPlayers;</span>
+<span class="fc" id="L88">        Player currentPlayer = addPlayer.getPlayers().get(currentPlayerIndex);</span>
+
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (!isTestRun) {</span>
+<span class="nc" id="L91">            String response = &quot;&quot;;</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            while (!response.equalsIgnoreCase(&quot;y&quot;)) {</span>
+<span class="nc" id="L93">                System.out.println(currentPlayer.getName() + &quot;, are you ready to play? (y/n)&quot;);</span>
+<span class="nc" id="L94">                response = scanner.nextLine();</span>
+            }
+        }
+<span class="fc" id="L97">        int diceResult1 = dice.roll();</span>
+<span class="fc" id="L98">        int diceResult2 = dice.roll();</span>
+<span class="fc" id="L99">        int totalRoll = diceResult1 + diceResult2;</span>
+
+<span class="fc" id="L101">        int oldPosition = currentPlayer.getPosition();</span>
+<span class="fc" id="L102">        int newPosition = ((oldPosition - 1 + totalRoll) % board.getSpaces().size()) + 1;</span>
+
+<span class="fc" id="L104">        currentPlayer.setPosition(newPosition);</span>
+<span class="fc" id="L105">        System.out.println(currentPlayer.getName() + &quot;'s balance: Â£&quot; + currentPlayer.getBalance());</span>
+<span class="fc" id="L106">        System.out.println(currentPlayer.getName() + &quot; rolled &quot; + diceResult1 + &quot; and &quot; + diceResult2 + &quot;. Moved to position &quot; + currentPlayer.getPosition());</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (oldPosition + totalRoll &gt; board.getSpaces().size()) {</span>
+<span class="fc" id="L108">            int totalPropertyPrice = currentPlayer.getOwnedProperties().stream()</span>
+<span class="fc" id="L109">                    .mapToInt(Property::getPrice)</span>
+<span class="fc" id="L110">                    .sum();</span>
+<span class="fc" id="L111">            int bonus = totalPropertyPrice / 100; // 1% of total property price</span>
+<span class="fc" id="L112">            currentPlayer.receiveMoney(bonus);</span>
+<span class="fc" id="L113">            currentPlayer.receiveMoney(200);</span>
+<span class="fc" id="L114">            System.out.println(currentPlayer.getName() + &quot; passed Home square and received Â£200 from the banker.&quot;);</span>
+<span class="fc" id="L115">            System.out.println(currentPlayer.getName() + &quot; also receives 1% of the purchase price of all of their properties as a bonus from the banker: Â£&quot; + bonus + &quot;.&quot;);</span>
+<span class="fc" id="L116">            System.out.println(currentPlayer.getName() + &quot;'s balance: Â£&quot; + currentPlayer.getBalance());</span>
+        }
+
+
+<span class="fc" id="L120">        Space landedSpace = board.getSpaces().get(currentPlayer.getPosition() - 1);</span>
+<span class="fc" id="L121">        int rentCost = 0;</span>
+        try {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">            if (landedSpace instanceof TrainStation) {</span>
+<span class="fc" id="L124">                TrainStation landedStation = (TrainStation) landedSpace;</span>
+<span class="fc" id="L125">                landedStation.setLastRoll(totalRoll);</span>
+<span class="fc" id="L126">                rentCost = landedStation.getRentCost();</span>
+<span class="fc" id="L127">                currentPlayer.payMoney(rentCost);</span>
+<span class="fc" id="L128">                System.out.println(currentPlayer.getName() + &quot; landed on a train station and paid Â£&quot; + rentCost + &quot; to the banker for their journey.&quot;);</span>
+<span class="fc" id="L129">                System.out.println(currentPlayer.getName() + &quot;'s balance: Â£&quot; + currentPlayer.getBalance());</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            } else if (landedSpace instanceof Property) {</span>
+<span class="fc" id="L131">                Property landedProperty = (Property) landedSpace;</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">                if (!landedProperty.isOwned()) {</span>
+<span class="fc" id="L133">                    System.out.println(&quot;You landed on a property. Price: &quot; + landedProperty.getPrice() + &quot;. Rental Value: &quot; + landedProperty.getPrice() / 10 + &quot;.&quot;);</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">                    if (!isTestRun) {</span>
+<span class="nc" id="L135">                    String response = &quot;&quot;;</span>
+<span class="nc bnc" id="L136" title="All 4 branches missed.">                    while (!response.equalsIgnoreCase(&quot;y&quot;) &amp;&amp; !response.equalsIgnoreCase(&quot;n&quot;)) {</span>
+<span class="nc" id="L137">                        System.out.println(&quot;Do you want to purchase it? (y/n)&quot;);</span>
+<span class="nc" id="L138">                        response = scanner.nextLine();</span>
+                    }
+<span class="nc bnc" id="L140" title="All 2 branches missed.">                        if (response.equalsIgnoreCase(&quot;y&quot;)) {</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">                            if (currentPlayer.getBalance() &gt;= landedProperty.getPrice()) {</span>
+<span class="nc" id="L142">                                currentPlayer.payMoney(landedProperty.getPrice());</span>
+<span class="nc" id="L143">                                landedProperty.setOwner(currentPlayer);</span>
+<span class="nc" id="L144">                                currentPlayer.getOwnedProperties().add(landedProperty);</span>
+<span class="nc" id="L145">                                System.out.println(currentPlayer.getName() + &quot; purchased the property and sent Â£&quot; + landedProperty.getPrice() + &quot; to the banker.&quot;);</span>
+<span class="nc" id="L146">                                System.out.println(currentPlayer.getName() + &quot;'s balance: Â£&quot; + currentPlayer.getBalance());</span>
+                            } else {
+<span class="nc" id="L148">                                System.out.println(&quot;You do not have enough balance to purchase this property.&quot;);</span>
+<span class="nc" id="L149">                                System.out.println(currentPlayer.getName() + &quot;'s balance: Â£&quot; + currentPlayer.getBalance());</span>
+                            }
+                        }
+<span class="nc" id="L152">                    }</span>
+<span class="nc bnc" id="L153" title="All 4 branches missed.">                } else if (landedProperty.isOwned() &amp;&amp; landedProperty.getOwner() != currentPlayer) {</span>
+<span class="nc" id="L154">                    rentCost = landedProperty.getRentCost();</span>
+<span class="nc" id="L155">                    currentPlayer.payMoney(rentCost);</span>
+<span class="nc" id="L156">                    landedProperty.getOwner().receiveMoney(rentCost);</span>
+<span class="nc" id="L157">                    System.out.println(currentPlayer.getName() + &quot; paid Â£&quot; + rentCost + &quot; in rent to &quot; + landedProperty.getOwner().getName() + &quot;.&quot;);</span>
+<span class="nc" id="L158">                    System.out.println(currentPlayer.getName() + &quot;'s balance: Â£&quot; + currentPlayer.getBalance());</span>
+                }
+<span class="fc bfc" id="L160" title="All 2 branches covered.">            } else if (landedSpace instanceof TaxOffice) {</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">                int taxPercentage = (diceResult1 == diceResult2) ? diceResult1 : totalRoll;</span>
+<span class="fc" id="L162">                int taxAmount = currentPlayer.getBalance() * taxPercentage / 100;</span>
+<span class="fc" id="L163">                currentPlayer.payMoney(taxAmount);</span>
+<span class="fc" id="L164">                System.out.println(currentPlayer.getName() + &quot; landed on a tax office and paid Â£&quot; + taxAmount + &quot; in tax to the banker.&quot;);</span>
+<span class="fc" id="L165">                System.out.println(currentPlayer.getName() + &quot;'s balance: Â£&quot; + currentPlayer.getBalance());</span>
+            }
+<span class="fc" id="L167">        } catch (InsufficientBalanceException e) {</span>
+<span class="fc" id="L168">            handleBankruptcy(currentPlayer, rentCost);</span>
+<span class="fc" id="L169">        }</span>
+<span class="fc" id="L170">        System.out.println(board.displayBoard() + &quot;\n&quot;);</span>
+<span class="fc" id="L171">    }</span>
+    /**
+     * Handles bankruptcy of a player.
+     *
+     * @param currentPlayer The player who is bankrupt.
+     * @param rentCost      The rent cost to pay.
+     * CheckStyle generates an error here since rentCost should be final.
+     * A final variable is one which cannot be changed after it is assigned a value.
+     * However, it is modified in the method.
+     * In the line &quot;rentCost -= payableRent;&quot;, rentCost is modified.
+     * With my implementation, this is unavoidable.
+     */
+    private void handleBankruptcy(final Player currentPlayer, int rentCost) {
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        if (currentPlayer.getBalance() &gt; 0) {</span>
+<span class="fc" id="L185">            int payableRent = Math.min(currentPlayer.getBalance(), rentCost);</span>
+            try {
+<span class="fc" id="L187">                currentPlayer.payMoney(payableRent);</span>
+<span class="fc" id="L188">                rentCost -= payableRent;</span>
+<span class="nc" id="L189">            } catch (InsufficientBalanceException e) {</span>
+<span class="fc" id="L190">            }</span>
+        }
+<span class="pc bpc" id="L192" title="2 of 4 branches missed.">        while (currentPlayer.getBalance() &lt; rentCost &amp;&amp; !currentPlayer.getOwnedProperties().isEmpty()) {</span>
+<span class="nc" id="L193">            Property cheapestProperty = currentPlayer.getOwnedProperties().stream()</span>
+<span class="nc" id="L194">                    .min(Comparator.comparing(Property::getPrice))</span>
+<span class="nc" id="L195">                    .orElseThrow(NoSuchElementException::new);</span>
+<span class="nc" id="L196">            int sellPrice = cheapestProperty.getPrice() / 2;</span>
+<span class="nc" id="L197">            currentPlayer.receiveMoney(sellPrice);</span>
+<span class="nc" id="L198">            cheapestProperty.setOwner(null);</span>
+<span class="nc" id="L199">            currentPlayer.removeProperty(cheapestProperty);</span>
+
+<span class="nc" id="L201">            System.out.println(currentPlayer.getName() + &quot; sold &quot; + cheapestProperty.getName() + &quot; for Â£&quot; + sellPrice + &quot; to the banker.&quot;);</span>
+<span class="nc" id="L202">        }</span>
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">        if (currentPlayer.getBalance() &gt;= rentCost) {</span>
+            try {
+<span class="nc" id="L205">                currentPlayer.payMoney(rentCost);</span>
+<span class="nc" id="L206">                System.out.println(currentPlayer.getName() + &quot; paid Â£&quot; + rentCost + &quot; in rent.&quot;);</span>
+<span class="nc" id="L207">            } catch (InsufficientBalanceException e) {</span>
+<span class="nc" id="L208">                System.out.println(currentPlayer.getName() + &quot; is declared bankrupt and is out of the game.&quot;);</span>
+<span class="nc" id="L209">                addPlayer.getPlayers().remove(currentPlayer);</span>
+<span class="nc" id="L210">            }</span>
+        } else {
+<span class="fc" id="L212">            System.out.println(currentPlayer.getName() + &quot; Has no means of paying their remaining rent.&quot;);</span>
+<span class="fc" id="L213">            System.out.println(currentPlayer.getName() + &quot; is declared bankrupt and is out of the game.&quot;);</span>
+<span class="fc" id="L214">            addPlayer.getPlayers().remove(currentPlayer);</span>
+        }
+<span class="fc" id="L216">    }</span>
+    /**
+     * Determines the winners of the game.
+     *
+     * @return The list of winners.
+     */
+    public List&lt;Player&gt; determineWinners() {
+<span class="fc" id="L223">        int highestAssets = 0;</span>
+<span class="fc" id="L224">        List&lt;Player&gt; winners = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L226" title="All 2 branches covered.">        for (Player player : addPlayer.getPlayers()) {</span>
+<span class="fc" id="L227">            int playerAssets = player.getTotalAssets();</span>
+
+<span class="fc bfc" id="L229" title="All 2 branches covered.">            if (playerAssets &gt; highestAssets) {</span>
+<span class="fc" id="L230">                highestAssets = playerAssets;</span>
+<span class="fc" id="L231">                winners.clear();</span>
+<span class="fc" id="L232">                winners.add(player);</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">            } else if (playerAssets == highestAssets) {</span>
+<span class="fc" id="L234">                winners.add(player);</span>
+            }
+<span class="fc" id="L236">        }</span>
+
+<span class="fc" id="L238">        return winners;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

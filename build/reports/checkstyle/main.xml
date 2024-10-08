@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.2">
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\app\Application.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\app\GameSetup.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\app\package-info.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\dice\Dice.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\dice\package-info.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\board\Board.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\board\package-info.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\board\Property.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\board\PurchasableInterface.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\board\Space.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\board\TaxOffice.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\board\TrainStation.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\board\TurnManager.java">
+<error line="183" column="63" severity="error" message="Parameter rentCost should be final." source="com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck"/>
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\package-info.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\player\AddPlayer.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\player\InsufficientBalanceException.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\player\package-info.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\game\player\Player.java">
+</file>
+<file name="C:\code\assessment-2024-starter-monopoly-main\src\main\java\com\cm6123\monopoly\package-info.java">
+</file>
+</checkstyle>
